@@ -378,6 +378,7 @@ class GaussianProcessRegressor(MultiOutputMixin,
                     y_var[y_var_negative] = 0.0
 
                 # undo normalisation
+                y_var = y_var.reshape((-1,1))
                 y_var = y_var * self._y_train_std**2
 
                 return y_mean, np.sqrt(y_var)
