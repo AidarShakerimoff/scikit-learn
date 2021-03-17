@@ -354,6 +354,7 @@ class GaussianProcessRegressor(MultiOutputMixin,
                 # undo normalisation
                 if (self._y_train_std.ndim==0):   # for single-target data
                   y_cov = y_cov * self._y_train_std**2  
+                  
                 elif (self._y_train_std.ndim==1):   # for multitarget data
                   y_cov_temp = y_cov.reshape((y_cov.shape[0], y_cov.shape[1], 1))
                   y_cov = np.zeros((y_cov.shape[0], y_cov.shape[1], self._y_train_std.shape[0]))
