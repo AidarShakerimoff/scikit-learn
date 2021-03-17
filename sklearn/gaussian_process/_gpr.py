@@ -352,9 +352,13 @@ class GaussianProcessRegressor(MultiOutputMixin,
                 y_cov = self.kernel_(X) - K_trans.dot(v)  # Line 6
 
                 # undo normalisation                
-                for line in y_cov:
-                  line = line.reshape(-1,1) 
-                  line = line * self._y_train_std**2
+                if (self._y_train_std.ndim==0):
+                  y_cov = y_cov * self._y_train_std**2  
+                elif (self._y_train_std.ndim==1):             
+                  for line in y_cov:
+                    line = line.reshape(-1,1) 
+                    line = line * self._y_train_std**2
+                    line = line.squeeze()
 
                 return y_mean, y_cov
             elif return_std:
@@ -380,8 +384,12 @@ class GaussianProcessRegressor(MultiOutputMixin,
                     y_var[y_var_negative] = 0.0
 
                 # undo normalisation
-                y_var = y_var.reshape((-1,1))
-                y_var = y_var * self._y_train_std**2
+                if (self._y_train_std.ndim==0):
+                  y_var = y_var * self._y_train_std**2  
+                elif (self._y_train_std.ndim==1):   
+                  y_var = y_var.reshape((-1,1))
+                  y_var = y_var * self._y_train_std**2
+                  y_var = y_var.squeeze()
 
                 return y_mean, np.sqrt(y_var)
             else:
