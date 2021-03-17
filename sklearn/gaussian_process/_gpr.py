@@ -351,14 +351,17 @@ class GaussianProcessRegressor(MultiOutputMixin,
                 v = cho_solve((self.L_, True), K_trans.T)  # Line 5
                 y_cov = self.kernel_(X) - K_trans.dot(v)  # Line 6
 
-                # undo normalisation 
+                # undo normalisation
                 if (self._y_train_std.ndim==0):   # for single-target data
                   y_cov = y_cov * self._y_train_std**2  
                 elif (self._y_train_std.ndim==1):   # for multitarget data
-                  for line in y_cov:
-                    line = line.reshape(-1,1) 
+                  y_cov_temp = y_cov.reshape((y_cov.shape[0], y_cov.shape[1], 1))
+                  y_cov = np.zeros((y_cov.shape[0], y_cov.shape[1], self._y_train_std.shape[0]))
+                  idx = 0
+                  for line in y_cov_temp:
                     line = line * self._y_train_std**2
-                    line = line.squeeze()
+                    y_cov[idx] = line
+                    idx += 1
 
                 return y_mean, y_cov
             elif return_std:
@@ -390,7 +393,6 @@ class GaussianProcessRegressor(MultiOutputMixin,
                 elif (self._y_train_std.ndim==1):   # for multitarget data 
                   y_var = y_var.reshape((-1,1))
                   y_var = y_var * self._y_train_std**2
-                  y_var = y_var.squeeze()
 
                 return y_mean, np.sqrt(y_var)
             else:
