@@ -364,11 +364,11 @@ class GaussianProcessRegressor(MultiOutputMixin,
                     for line in y_cov_copy:
                         line = line * self._y_train_std**2
                         y_cov[idx] = line
-                        idx += 1 
+                        idx += 1
 
                 # for single target data
                 else:
-                    y_cov = y_cov * self._y_train_std**2 
+                    y_cov = y_cov * self._y_train_std**2
 
                 return y_mean, y_cov
             elif return_std:
@@ -397,10 +397,10 @@ class GaussianProcessRegressor(MultiOutputMixin,
 
                 # for multitarget data
                 if hasattr(self._y_train_std, "__len__"):
-                    y_var = y_var.reshape((-1,1))
+                    y_var = y_var.reshape((-1, 1))
                     y_var = y_var * self._y_train_std**2
                 # for single target data
-                else: 
+                else:
                     y_var = y_var * self._y_train_std**2
 
                 return y_mean, np.sqrt(y_var)
