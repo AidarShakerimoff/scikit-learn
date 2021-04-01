@@ -263,10 +263,15 @@ def test_y_normalization(kernel):
     y_pred = y_pred * y_std + y_mean
     y_pred_std = y_pred_std * y_std
     y_pred_norm, y_pred_std_norm = gpr_norm.predict(X2, return_std=True)
-
-    assert_almost_equal(y_pred, y_pred_norm)
-    assert_almost_equal(y_pred_std, y_pred_std_norm)
-
+    if hasattr(y_pred, "__len__"):
+        idx = 0
+        for ele in y_pred:
+            assert_almost_equal(y_pred[idx], y_pred_norm[idx])
+            assert_almost_equal(y_pred_std[idx], y_pred_std_norm[idx])
+    else:
+        assert_almost_equal(y_pred, y_pred_norm)
+        assert_almost_equal(y_pred_std, y_pred_std_norm)
+        
     _, y_cov = gpr.predict(X2, return_cov=True)
     y_cov = y_cov * y_std**2
     _, y_cov_norm = gpr_norm.predict(X2, return_cov=True)
