@@ -1687,7 +1687,7 @@ class Matern(RBF):
 
             if self.nu == 0.5:
                 tmp = np.sqrt(D.sum(2))[:, :, np.newaxis]
-                tmp = np.where(tmp = 0, 1.e-17, tmp)
+                tmp[tmp == 0] = 1.e-17
                 K_gradient = K[..., np.newaxis] * D \
                     / tmp
                 K_gradient[~np.isfinite(K_gradient)] = 0
