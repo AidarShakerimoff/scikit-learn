@@ -1686,8 +1686,10 @@ class Matern(RBF):
                 D = squareform(dists**2)[:, :, np.newaxis]
 
             if self.nu == 0.5:
+                tmp = np.sqrt(D.sum(2))[:, :, np.newaxis]
+                tmp = np.where(tmp = 0, 1.e-17, tmp)
                 K_gradient = K[..., np.newaxis] * D \
-                    / np.sqrt(D.sum(2))[:, :, np.newaxis]
+                    / tmp
                 K_gradient[~np.isfinite(K_gradient)] = 0
             elif self.nu == 1.5:
                 K_gradient = \
